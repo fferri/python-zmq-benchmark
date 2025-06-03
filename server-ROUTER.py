@@ -15,16 +15,15 @@ def main():
     print(f"ROUTER server listening on port {args.port} with matrix size {args.size}x{args.size}")
 
     while True:
-        # Receive the full ROUTER envelope: [identity, empty, data]
-        parts = socket.recv_multipart()
-        identity, empty, payload = parts
+        # Receive: [identity, payload]
+        identity, payload = socket.recv_multipart()
 
-        # Simulate some CPU work
+        # Simulate CPU work
         matrix = np.random.rand(args.size, args.size)
         _ = np.linalg.pinv(matrix)
 
-        # Reply with same identity envelope
-        socket.send_multipart([identity, b'', b'OK'])
+        # Send back response: [identity, reply]
+        socket.send_multipart([identity, b'OK'])
 
 if __name__ == "__main__":
     main()
